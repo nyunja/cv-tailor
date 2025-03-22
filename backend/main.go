@@ -4,17 +4,17 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/nyunja/cv-tailor/backend/internal"
+	"github.com/nyunja/cv-tailor/internal"
 )
 
 func main() {
 	router := gin.Default()
 
-	// internal.InitGemini()
+	internal.InitGemini()
 
-	// router.GET("/upload", internal.UploadHandler)
+	router.GET("/upload", internal.UploadHandler)
 	// Download tailored CV as PDF or DOCX
-	// router.GET("/download/tailored_cv.pdf", internal.DownloadPDFHandler)
+	router.GET("/download/tailored_cv.pdf", internal.DownloadPDFHandler)
 
 	// router.GET("/download/tailored_cv.pdf", downloadHandler)
 

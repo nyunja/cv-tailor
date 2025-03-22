@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"log"
@@ -28,6 +28,6 @@ func extractTextFromPDF(filePath string) string {
 }
 
 // Handlers to Download Files
-func downloadPDFHandler(c *gin.Context) {
+func DownloadPDFHandler(c *gin.Context) {
 	c.File("output/tailored_cv.pdf")
 }
