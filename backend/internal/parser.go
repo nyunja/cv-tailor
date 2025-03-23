@@ -1,30 +1,28 @@
 package internal
 
 import (
+	"bytes"
+	"fmt"
 	"log"
-	"os"
-	"strings"
 
+	"github.com/dslipak/pdf"
 	"github.com/gin-gonic/gin"
-	"github.com/pdfcpu/pdfcpu/pkg/api"
 )
 
 // Extract text from PDF using pdfcpu
-func extractTextFromPDF(filePath string) string {
-	tmpFile := "extract_text.txt"
-	defer os.Remove(tmpFile)
-
-	err := api.ExtractContentFile(filePath, tmpFile, nil, nil)
+func extractTextFromPDF(filePath string) (string, error) {
+	file, err := pdf.Open(filePath)
 	if err != nil {
-		log.Println("Error extracting content from PDF:", err)
-		return ""
+		log.Printf("Error opening PDF file %s: %v", filePath, err)
+		return "", fmt.Errorf("error opening PDF file %s: %v", filePath, err)
 	}
-	content, err := os.ReadFile(tmpFile)
+	var buf bytes.Buffer
+	b, err := file.GetPlainText()
 	if err != nil {
-		log.Println("Error reading temp file:", err)
-		return ""
+		return "", fmt.Errorf("error extracting text from PDF file %s: %v", filePath, err)
 	}
-	return strings.TrimSpace(string(content))
+	buf.ReadFrom(b)
+	return buf.String(), nil
 }
 
 // Handlers to Download Files
