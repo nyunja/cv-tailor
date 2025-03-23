@@ -6,9 +6,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/google/generative-ai-go/genai"
-	"google.golang.org/api/option"
 	gemini "github.com/google/generative-ai-go/genai"
+	"google.golang.org/api/option"
 )
 
 var geminiClient *gemini.Client
@@ -81,11 +80,11 @@ func generateTailoredCV(cvText, jobDescText string) string {
 	`, cvText, jobDescText)
 
 	// Call Gemini API
-	model := geminiClient.GenerativeModel("gemini-1.5-flash")
-	resp, err := model.GenerateContent(ctx, genai.Text(prompt))
+	model := geminiClient.GenerativeModel("gemini-2.0-flash")
+	resp, err := model.GenerateContent(ctx, gemini.Text(prompt))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return fmt.Sprintf("%s", resp.Candidates[0])
+	return fmt.Sprintf("%s", resp.Candidates[0].Content.Parts[0])
 }
