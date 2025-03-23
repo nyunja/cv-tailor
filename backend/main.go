@@ -12,7 +12,7 @@ func main() {
 
 	internal.InitGemini()
 
-	router.GET("/upload", internal.UploadHandler)
+	router.POST("/upload", internal.UploadHandler)
 	// Download tailored CV as PDF or DOCX
 	router.GET("/download/tailored_cv.pdf", internal.DownloadPDFHandler)
 
