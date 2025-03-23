@@ -26,21 +26,47 @@ func UploadHandler(c *gin.Context) {
 	}
 
 	// Save files temporarily
+	uploadsDir := "uploads"
+	if _, err := os.Stat(uploadsDir); os.IsNotExist(err) {
+		os.Mkdir(uploadsDir, 0755)
+	}
 	cvPath := fmt.Sprintf("uploads/%s", cv.Filename)
 	jobDescPath := fmt.Sprintf("uploads/%s", jobDesc.Filename)
-
-	_ = c.SaveUploadedFile(cv, cvPath)
-	_ = c.SaveUploadedFile(jobDesc, jobDescPath)
+	if err := c.SaveUploadedFile(cv, cvPath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save CV"})
+        return
+	}
+	if err := c.SaveUploadedFile(jobDesc, jobDescPath); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save job description"})
+        return
+    }
 
 	// Extract text
-	cvText := extractTextFromPDF(cvPath)
-	jobDescText := extractTextFromPDF(jobDescPath)
+	cvText, err := extractTextFromPDF(cvPath)
+	if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to extract text from cv"})
+        return
+    }
+	jobDescText, err := extractTextFromPDF(jobDescPath)
+	if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to extract text from job descriptor"})
+        return
+    }
+	c.JSON(http.StatusOK, gin.H{"message": "Files uploaded successfully", "cvText": cvText, "jobDescText": jobDescText})
 
 	// Process the files (implement NLP matching & tailoring)
 	tailoredCV := generateTailoredCV(cvText, jobDescText)
+	if tailoredCV == "" {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate tailored CV"})
+        return
+    }
+	c.JSON(http.StatusOK, gin.H{"message": "CV processed", "tailoredCV": tailoredCV})
 
 	// Save processed CV
-	outputPath := "output/tailored_cv.pdf"
+	outputPath := "output/tailored_cv.md"
+	if _, err := os.Stat("output"); os.IsNotExist(err) {
+		os.MkdirAll("output", 0755)
+	}
 	err = os.WriteFile(outputPath, []byte(tailoredCV), 0644)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate tailored CV"})
