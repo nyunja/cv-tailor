@@ -46,6 +46,8 @@ func generateTailoredCV(cvText, jobDescText string) string {
 		- **Concise**
 		- **Well-structured with bullet points**
 		- **Highlights only the most relevant skills and experiences**
+		- **Try to reword some of the roles and responsilbilties to fit somr of the roles of the job description**
+		- **Keep the important metrics or add some metric if not available**
 		- **Uses strong action verbs**
 		- **Formatted properly for easy readability**
 		
@@ -56,7 +58,7 @@ func generateTailoredCV(cvText, jobDescText string) string {
 		📍 Location | 📧 Email | 📞 Phone | 🌐 LinkedIn  
 
 		### **Professional Summary**  
-		A brief 2-3 sentence overview emphasizing expertise relevant to the job.
+		A brief 2-3 sentence overview emphasizing expertise relevant to the job and why you want the role.
 
 		### **Key Skills**  
 		- Skill 1 | Skill 2 | Skill 3  
